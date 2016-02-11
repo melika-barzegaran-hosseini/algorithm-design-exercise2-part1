@@ -8,10 +8,34 @@ import java.io.IOException;
 public class SystemOfLinearEquations
 {
     private String path;
+    private Input input;
+    private Output output;
 
     public SystemOfLinearEquations(String path)
     {
         this.path = path;
+    }
+
+    private void print(Integer[][] matrix)
+    {
+        for(Integer[] rows : matrix)
+        {
+            for(Integer value : rows)
+            {
+                System.out.format("%12d", value);
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+
+    private void print(Integer[] vector)
+    {
+        for(Integer value : vector)
+        {
+            System.out.format("%12d\n", value);
+        }
+        System.out.println();
     }
 
     private Input read(String path)
@@ -54,7 +78,7 @@ public class SystemOfLinearEquations
                 throw new Exception();
             }
 
-            System.out.println("the rank of the matrix coefficient is '" + rank + "'.");
+            System.out.println("the rank of the matrix coefficient = " + rank + "\n");
 
             input.coefficients = new Integer[rank][rank];
 
@@ -96,15 +120,8 @@ public class SystemOfLinearEquations
                 }
             }
 
-            System.out.println("the matrix coefficient is as below:");
-            for(Integer[] rows : input.coefficients)
-            {
-                for(Integer value : rows)
-                {
-                    System.out.format("%12d", value);
-                }
-                System.out.println();
-            }
+            System.out.println("the matrix coefficient:");
+            print(input.coefficients);
 
             input.constants = new Integer[rank];
             if((line = reader.readLine()) != null && !line.isEmpty())
@@ -141,11 +158,8 @@ public class SystemOfLinearEquations
                 throw new Exception();
             }
 
-            System.out.println("the constants vector is as below:");
-            for(Integer value : input.constants)
-            {
-                System.out.format("%12d\n", value);
-            }
+            System.out.println("the constants vector:");
+            print(input.constants);
         }
         catch (FileNotFoundException e)
         {
@@ -215,17 +229,54 @@ public class SystemOfLinearEquations
         return determinant;
     }
 
+    private Integer getDeterminant(Integer index)
+    {
+        Integer[][] coefficients = new Integer[input.coefficients.length][input.coefficients[0].length];
+        for(int i = 0; i < input.coefficients.length; i++)
+        {
+            for(int j = 0; j < input.coefficients[0].length; j++)
+            {
+                coefficients[i][j] = input.coefficients[i][j];
+            }
+        }
+
+        for(int counter = 0; counter < input.constants.length; counter++)
+        {
+            coefficients[counter][index] = input.constants[counter];
+        }
+
+        System.out.println("the '" + (index + 1) + "'th unknown matrix:");
+        print(coefficients);
+
+        return getDeterminant(coefficients);
+    }
+
     private void solve()
     {
-        Input input = read(path);
+        this.input = read(path);
+
         Integer determinant = getDeterminant(input.coefficients);
-        System.out.println("the determinant of the coefficients matrix is '" + determinant + "'.");
+
+        this.output = new Output();
+        output.unknowns = new Integer[input.constants.length];
+        for(int counter = 0; counter < input.constants.length; counter++)
+        {
+            output.unknowns[counter] = getDeterminant(counter) / determinant;
+        }
+
+        System.out.println("the unknown values:");
+        print(output.unknowns);
     }
 
     private class Input
     {
         private Integer[][] coefficients;
         private Integer[] constants;
+    }
+
+    private class Output
+    {
+        private Integer[] unknowns;
     }
 
     public static void main(String args[])
