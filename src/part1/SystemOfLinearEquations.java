@@ -10,10 +10,12 @@ public class SystemOfLinearEquations
     private String path;
     private Input input;
     private Output output;
+    private boolean print;
 
     public SystemOfLinearEquations(String path)
     {
         this.path = path;
+        this.print = false;
     }
 
     private void print(Integer[][] matrix)
@@ -78,7 +80,10 @@ public class SystemOfLinearEquations
                 throw new Exception();
             }
 
-            System.out.println("the rank of the matrix coefficient = " + rank + "\n");
+            if(print)
+            {
+                System.out.println("the rank of the matrix coefficient = " + rank + "\n");
+            }
 
             input.coefficients = new Integer[rank][rank];
 
@@ -120,8 +125,11 @@ public class SystemOfLinearEquations
                 }
             }
 
-            System.out.println("the matrix coefficient:");
-            print(input.coefficients);
+            if(print)
+            {
+                System.out.println("the matrix coefficient:");
+                print(input.coefficients);
+            }
 
             input.constants = new Integer[rank];
             if((line = reader.readLine()) != null && !line.isEmpty())
@@ -158,8 +166,11 @@ public class SystemOfLinearEquations
                 throw new Exception();
             }
 
-            System.out.println("the constants vector:");
-            print(input.constants);
+            if(print)
+            {
+                System.out.println("the constants vector:");
+                print(input.constants);
+            }
         }
         catch (FileNotFoundException e)
         {
@@ -245,8 +256,11 @@ public class SystemOfLinearEquations
             coefficients[counter][index] = input.constants[counter];
         }
 
-        System.out.println("the '" + (index + 1) + "'th unknown matrix:");
-        print(coefficients);
+        if(print)
+        {
+            System.out.println("the '" + (index + 1) + "'th unknown matrix:");
+            print(coefficients);
+        }
 
         return getDeterminant(coefficients);
     }
@@ -264,8 +278,18 @@ public class SystemOfLinearEquations
             output.unknowns[counter] = getDeterminant(counter) / determinant;
         }
 
-        System.out.println("the unknown values:");
-        print(output.unknowns);
+        if(print)
+        {
+            System.out.println("the unknown values:");
+            print(output.unknowns);
+        }
+        else
+        {
+            for(Integer value : output.unknowns)
+            {
+                System.out.println(value);
+            }
+        }
     }
 
     private class Input
@@ -281,7 +305,7 @@ public class SystemOfLinearEquations
 
     public static void main(String args[])
     {
-        SystemOfLinearEquations system = new SystemOfLinearEquations("testcase.txt");
+        SystemOfLinearEquations system = new SystemOfLinearEquations(args[0]);
         system.solve();
     }
 }
