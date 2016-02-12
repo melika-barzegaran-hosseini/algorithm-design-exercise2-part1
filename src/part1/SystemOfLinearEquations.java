@@ -305,7 +305,14 @@ public class SystemOfLinearEquations
 
     public static void main(String args[])
     {
-        SystemOfLinearEquations system = new SystemOfLinearEquations(args[0]);
-        system.solve();
+        if(args.length == 1)
+        {
+            SystemOfLinearEquations system = new SystemOfLinearEquations(args[0]);
+            system.solve();
+        }
+        else
+        {
+            System.err.println("error: the input is invalid. it should be the path of the input file.");
+        }
     }
 }
