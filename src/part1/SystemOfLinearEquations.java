@@ -271,6 +271,12 @@ public class SystemOfLinearEquations
 
         Integer determinant = getDeterminant(input.coefficients);
 
+        if(determinant == 0)
+        {
+            System.out.println("the system is not linear.");
+            return;
+        }
+
         this.output = new Output();
         output.unknowns = new Integer[input.constants.length];
         for(int counter = 0; counter < input.constants.length; counter++)
