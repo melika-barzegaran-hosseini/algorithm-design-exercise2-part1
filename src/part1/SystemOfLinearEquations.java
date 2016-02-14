@@ -18,24 +18,24 @@ public class SystemOfLinearEquations
         this.print = false;
     }
 
-    private void print(Integer[][] matrix)
+    private void print(Double[][] matrix)
     {
-        for(Integer[] rows : matrix)
+        for(Double[] rows : matrix)
         {
-            for(Integer value : rows)
+            for(Double value : rows)
             {
-                System.out.format("%12d", value);
+                System.out.format("%12.2f", value);
             }
             System.out.println();
         }
         System.out.println();
     }
 
-    private void print(Integer[] vector)
+    private void print(Double[] vector)
     {
-        for(Integer value : vector)
+        for(Double value : vector)
         {
-            System.out.format("%12d\n", value);
+            System.out.format("%12.2f\n", value);
         }
         System.out.println();
     }
@@ -85,7 +85,7 @@ public class SystemOfLinearEquations
                 System.out.println("the rank of the matrix coefficient = " + rank + "\n");
             }
 
-            input.coefficients = new Integer[rank][rank];
+            input.coefficients = new Double[rank][rank];
 
             for(int i = 0; i < rank; i++)
             {
@@ -98,14 +98,14 @@ public class SystemOfLinearEquations
                         {
                             try
                             {
-                                input.coefficients[i][j] = Integer.parseInt(tokens[j]);
+                                input.coefficients[i][j] = Double.parseDouble(tokens[j]);
                             }
                             catch (NumberFormatException e)
                             {
                                 System.err.println("error: the '" + (i + 2) + "'th line of the file '" + path + "' is" +
                                         " not structured properly.\n lines should represent the values of the matrix " +
-                                        "coefficient.\n the values must be integer numbers with the min value of '" +
-                                        Integer.MIN_VALUE + "' and the max value of '" + Integer.MAX_VALUE + "'.");
+                                        "coefficient.\n the values must be float numbers with the min value of '" +
+                                        Double.MIN_VALUE + "' and the max value of '" + Double.MAX_VALUE + "'.");
                                 throw new Exception();
                             }
                         }
@@ -131,7 +131,7 @@ public class SystemOfLinearEquations
                 print(input.coefficients);
             }
 
-            input.constants = new Integer[rank];
+            input.constants = new Double[rank];
             if((line = reader.readLine()) != null && !line.isEmpty())
             {
                 String[] tokens = line.trim().split("\\s+");
@@ -141,14 +141,14 @@ public class SystemOfLinearEquations
                     {
                         try
                         {
-                            input.constants[i] = Integer.parseInt(tokens[i]);
+                            input.constants[i] = Double.parseDouble(tokens[i]);
                         }
                         catch (NumberFormatException e)
                         {
                             System.err.println("error: the last needed line of the file '" + path + "' is not " +
                                     "structured properly.\n the last line should represent the values of the " +
-                                    "constants vector.\n the values must be integer numbers with the min value of '"
-                                    + Integer.MIN_VALUE + "' and the max value of '" + Integer.MAX_VALUE + "'.");
+                                    "constants vector.\n the values must be float numbers with the min value of '" +
+                                    Double.MIN_VALUE + "' and the max value of '" + Double.MAX_VALUE + "'.");
                             throw new Exception();
                         }
                     }
@@ -205,9 +205,9 @@ public class SystemOfLinearEquations
         return input;
     }
 
-    private Integer getDeterminant(Integer[][] matrix)
+    private Double getDeterminant(Double[][] matrix)
     {
-        Integer determinant = 0;
+        Double determinant = 0.0;
 
         if(matrix.length == 1)
         {
@@ -217,7 +217,7 @@ public class SystemOfLinearEquations
         {
             for(int j = 0; j < matrix.length; j++)
             {
-                Integer[][] minor = new Integer[matrix.length - 1][matrix.length - 1];
+                Double[][] minor = new Double[matrix.length - 1][matrix.length - 1];
 
                 for(int row = 1; row < matrix.length; row++)
                 {
@@ -234,15 +234,15 @@ public class SystemOfLinearEquations
                     }
                 }
 
-                determinant += matrix[0][j] * new Double(Math.pow(-1, j)).intValue() * getDeterminant(minor);
+                determinant += matrix[0][j] * Math.pow(-1, j) * getDeterminant(minor);
             }
         }
         return determinant;
     }
 
-    private Integer getDeterminant(Integer index)
+    private Double getDeterminant(Integer index)
     {
-        Integer[][] coefficients = new Integer[input.coefficients.length][input.coefficients[0].length];
+        Double[][] coefficients = new Double[input.coefficients.length][input.coefficients[0].length];
         for(int i = 0; i < input.coefficients.length; i++)
         {
             for(int j = 0; j < input.coefficients[0].length; j++)
@@ -269,16 +269,16 @@ public class SystemOfLinearEquations
     {
         this.input = read(path);
 
-        Integer determinant = getDeterminant(input.coefficients);
+        Double determinant = getDeterminant(input.coefficients);
 
-        if(determinant == 0)
+        if(determinant == 0.0)
         {
             System.out.println("the system is not linear.");
             return;
         }
 
         this.output = new Output();
-        output.unknowns = new Integer[input.constants.length];
+        output.unknowns = new Double[input.constants.length];
         for(int counter = 0; counter < input.constants.length; counter++)
         {
             output.unknowns[counter] = getDeterminant(counter) / determinant;
@@ -291,22 +291,22 @@ public class SystemOfLinearEquations
         }
         else
         {
-            for(Integer value : output.unknowns)
+            for(Double value : output.unknowns)
             {
-                System.out.println(value);
+                System.out.format("%.2f\n", value);
             }
         }
     }
 
     private class Input
     {
-        private Integer[][] coefficients;
-        private Integer[] constants;
+        private Double[][] coefficients;
+        private Double[] constants;
     }
 
     private class Output
     {
-        private Integer[] unknowns;
+        private Double[] unknowns;
     }
 
     public static void main(String args[])
