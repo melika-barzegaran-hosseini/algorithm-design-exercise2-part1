@@ -314,6 +314,7 @@ public class SystemOfLinearEquations
         if(args.length == 1)
         {
             SystemOfLinearEquations system = new SystemOfLinearEquations(args[0]);
+            //system.print = true;
             system.solve();
         }
         else
